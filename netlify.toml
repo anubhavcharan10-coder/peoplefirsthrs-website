@@ -3,3 +3,15 @@
 
 [build.processing]
   skip_processing = true
+  
+[[redirects]]
+  from = "/blog"
+  to = "https://blog.peoplefirsthrs.in/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/blog/*"
+  to = "https://blog.peoplefirsthrs.in/:splat"
+  status = 200
+  force = true
