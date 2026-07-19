@@ -6,12 +6,12 @@
   
 [[redirects]]
   from = "/blog"
-  to = "https://blog.peoplefirsthrs.in/:splat"
+  to = "https://blog.peoplefirsthrs.in/blog"
   status = 200
   force = true
 
 [[redirects]]
   from = "/blog/*"
-  to = "https://blog.peoplefirsthrs.in/:splat"
+  to = "https://blog.peoplefirsthrs.in/blog/:splat"
   status = 200
   force = true
