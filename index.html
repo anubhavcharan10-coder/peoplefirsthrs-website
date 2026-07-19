@@ -997,16 +997,24 @@ function nav(pageId, anchorId) {
     }, 150);
   }
 }
-function goPage(id)     { nav(id, null); }
+function goPage(id)     { nav(id, null); window.location.hash = id;}
 function goCalc(calcId) {
   nav('calculators', null);
   switchCalc(calcId, null);
+  window.location.hash = 'calc-' + calcId;
   setTimeout(function() {
     var a = document.getElementById('calc-anchor');
     if (a) window.scrollTo({ top: a.getBoundingClientRect().top + window.pageYOffset - 64, behavior: 'smooth' });
   }, 150);
 }
-
+window.addEventListener('load', function() {
+  var hash = window.location.hash.replace('#', '');
+  if (hash.indexOf('calc-') === 0) {
+    goCalc(hash.replace('calc-', ''));
+  } else if (hash) {
+    goPage(hash);
+  }
+});
 // ═══════════════════════════════════════════════
 // ═══ CALC TAB SWITCH ════════════════════════════════
 function switchCalc(id, btn) {
