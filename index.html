@@ -1008,12 +1008,14 @@ function goCalc(calcId) {
   }, 150);
 }
 window.addEventListener('load', function() {
-  var hash = window.location.hash.replace('#', '');
-  if (hash.indexOf('calc-') === 0) {
-    goCalc(hash.replace('calc-', ''));
-  } else if (hash) {
-    goPage(hash);
-  }
+  setTimeout(function() {
+    var hash = window.location.hash.replace('#', '');
+    if (hash.indexOf('calc-') === 0) {
+      goCalc(hash.replace('calc-', ''));
+    } else if (hash) {
+      goPage(hash);
+    }
+  }, 150);
 });
 // ═══════════════════════════════════════════════
 // ═══ CALC TAB SWITCH ════════════════════════════════
