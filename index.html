@@ -712,43 +712,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.5);padding:60px 48px 32px;
         </div>
       </div>
     </div>
-    <div class="ca-dir-head">
-      <div>
-        <div class="section-label" style="margin-bottom:4px">CA Directory</div>
-        <h3 style="font-family:var(--serif);font-size:1.35rem;color:var(--ink)">Browse ICAI-verified Chartered Accountants</h3>
-      </div>
-      <div class="ca-filters">
-        <select class="ca-filter-sel" onchange="filterCAs()">
-          <option value="">All Specializations</option>
-          <option value="Income Tax Filing">Income Tax Filing</option>
-          <option value="GST Advisory">GST Advisory</option>
-          <option value="Tax Planning">Tax Planning</option>
-          <option value="NRI Taxation">NRI Taxation</option>
-          <option value="Startup Advisory">Startup Advisory</option>
-          <option value="Company Audit">Company Audit</option>
-        </select>
-        <select class="ca-filter-sel" onchange="filterCAs()">
-          <option value="">Any Experience</option>
-          <option value="0-5">0–5 years</option>
-          <option value="5-10">5–10 years</option>
-          <option value="10+">10+ years</option>
-        </select>
-        <select class="ca-filter-sel" onchange="filterCAs()">
-          <option value="">Any Fee</option>
-          <option value="low">Under ₹1,500/hr</option>
-          <option value="mid">₹1,500–₹3,000/hr</option>
-          <option value="high">₹3,000+/hr</option>
-        </select>
-        <select class="ca-filter-sel" onchange="filterCAs()">
-          <option value="">Sort: Top Rated</option>
-          <option value="fee-asc">Fee: Low to High</option>
-          <option value="fee-desc">Fee: High to Low</option>
-          <option value="exp">Most Experienced</option>
-        </select>
-      </div>
-    </div>
-    <div class="ca-grid" id="ca-grid"></div>
-  </div>
+    
 </div>
 
 <!-- CA CONSULTATION MODAL -->
@@ -1132,65 +1096,6 @@ function calcAttrition() {
   set('r-attrRate',attr+' %');set('r-avgHC',Math.round(avg));
   set('r-retRate',ret+' %');set('r-netHC',(e-s>=0?'+':'')+(e-s));
 }
-
-
-// ═══ CA DIRECTORY ════════════════════════════════════
-const caData=[
-  {name:'Coming Soon',init:'CS',color:'av-teal',qual:'ACA | 0 Years',city:'',specs:['Skill 1','Skill 2','Skill 3'],rating:0,reviews:0,fee:0,exp:0,bio:'This profile is coming soon. We are verifying ICAI credentials and will publish the full profile shortly.',premium:false},
-  {name:'Coming Soon',init:'CS',color:'av-teal',qual:'ACA | 0 Years',city:'',specs:['Skill 1','Skill 2','Skill 3'],rating:0,reviews:0,fee:0,exp:0,bio:'This profile is coming soon. We are verifying ICAI credentials and will publish the full profile shortly.',premium:false},
-];
-function renderCAs(data) {
-  const g=document.getElementById('ca-grid');
-  if(!g) return;
-  if(!data.length){g.innerHTML='<p style="color:var(--muted);padding:24px 0">No CAs match your filters.</p>';return;}
-  g.innerHTML=data.map((ca,i)=>{
-    const isPlaceholder = ca.name === 'Coming Soon';
-    return `<div class="ca-card" style="${isPlaceholder?'opacity:0.6;border:1px dashed var(--border);background:var(--paper);':''}">
-    <div class="ca-card-top">
-      <div class="ca-avatar av-teal" style="${isPlaceholder?'background:var(--border);color:var(--muted);':''}">?</div>
-      <div class="ca-info">
-        <h4 style="color:var(--muted);font-style:italic;">Profile Coming Soon</h4>
-        <div class="ca-qual">ICAI Verification in Progress</div>
-        <div style="display:inline-flex;align-items:center;gap:3px;background:#fff8e1;color:#e65100;font-size:0.68rem;font-weight:700;padding:3px 8px;border-radius:12px;margin-top:4px;letter-spacing:0.03em;">⏳ Pending Verification</div>
-      </div>
-    </div>
-    <div class="ca-specs">${ca.specs.map(s=>`<span class="ca-spec-tag" style="background:var(--cream);color:var(--border);">${s}</span>`).join('')}</div>
-    <div class="ca-meta">
-      <div><div class="meta-label">Consultation Fee</div><div class="meta-val" style="color:var(--muted);">TBA</div></div>
-      <div><div class="meta-label">Experience</div><div class="meta-val" style="color:var(--muted);">TBA</div></div>
-    </div>
-    <div class="ca-bio" style="color:var(--border);">This profile will be published once ICAI credentials are verified by our team.</div>
-    <div class="ca-actions">
-      <button class="btn-ca-p" disabled style="background:var(--border);cursor:not-allowed;">Profile Not Yet Live</button>
-    </div>
-  </div>`;
-  }).join('');
-}
-function filterCAs() {
-  const sels=document.querySelectorAll('.ca-filter-sel');
-  const spec=sels[0].value,exp=sels[1].value,fee=sels[2].value,sort=sels[3].value;
-  let d=[...caData];
-  if(spec) d=d.filter(c=>c.specs.includes(spec));
-  if(exp==='0-5') d=d.filter(c=>c.exp<=5);
-  else if(exp==='5-10') d=d.filter(c=>c.exp>5&&c.exp<=10);
-  else if(exp==='10+') d=d.filter(c=>c.exp>10);
-  if(fee==='low') d=d.filter(c=>c.fee<1500);
-  else if(fee==='mid') d=d.filter(c=>c.fee>=1500&&c.fee<=3000);
-  else if(fee==='high') d=d.filter(c=>c.fee>3000);
-  if(sort==='fee-asc') d.sort((a,b)=>a.fee-b.fee);
-  else if(sort==='fee-desc') d.sort((a,b)=>b.fee-a.fee);
-  else if(sort==='exp') d.sort((a,b)=>b.exp-a.exp);
-  else d.sort((a,b)=>b.rating-a.rating);
-  renderCAs(d);
-}
-function openModal(name,meta,fee){
-  document.getElementById('modal-ca-name').textContent='Book with '+name;
-  document.getElementById('modal-ca-meta').textContent=meta+' · '+fee;
-  document.getElementById('modal-success').style.display='none';
-  document.getElementById('consult-modal').classList.add('open');
-}
-function closeModal(){document.getElementById('consult-modal').classList.remove('open');}
-
 
 
 // ═══ MISC ════════════════════════════════════════════
