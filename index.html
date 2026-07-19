@@ -664,6 +664,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.5);padding:60px 48px 32px;
 <div id="page-ca" class="page" style="display:none">
 <div id="ca-anchor"></div>
 <div class="page-wrap" style="padding-top:80px">
+  <div class="section-label" style="margin-bottom:8px">Find a Verified CA</div>
+<h3 style="font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:12px">Browse our CA directory</h3>
+<p style="color:var(--muted);font-size:0.92rem;line-height:1.7;margin-bottom:28px">Every listed CA has been manually verified against their ICAI membership.</p>
+<div id="ca-directory-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:48px;"></div>
     <div class="ca-top">
       <div class="ca-register-card">
         <h3>Are you a CA?</h3>
@@ -1319,6 +1323,36 @@ window.onload = function() {
   calcLeave();
   if (typeof renderCAs === 'function' && typeof caData !== 'undefined') renderCAs(caData);
 };
+</script>
+  <script>
+async function loadCADirectory() {
+  var grid = document.getElementById('ca-directory-grid');
+  if (!grid) return;
+  try {
+    var res = await fetch('https://blog.peoplefirsthrs.in/wp-json/wp/v2/ca_profiles');
+    var data = await res.json();
+    var verified = data.filter(function(ca){ return ca.verified === 'Yes'; });
+    if (verified.length === 0) {
+      grid.innerHTML = '<p style="color:var(--muted)">New CA profiles coming soon.</p>';
+      return;
+    }
+    grid.innerHTML = verified.map(function(ca){
+      var initials = (ca.full_name || '?').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+      var waLink = ca.whatsapp_number ? 'https://wa.me/' + ca.whatsapp_number.replace(/[^0-9]/g,'') : '#';
+      var photoHtml = ca.photo ? '<img src="' + ca.photo + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;">' : '<div style="width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.1rem;">' + initials + '</div>';
+      return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:20px;">' +
+        '<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">' + photoHtml +
+        '<div><div style="font-weight:600;color:var(--ink);">' + (ca.full_name||'') + '</div>' +
+        '<div style="font-size:0.85rem;color:var(--muted);">' + (ca.city||'') + ' &bull; ' + (ca.years_of_experience||'0') + ' yrs</div></div></div>' +
+        '<div style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">' + (ca.specializations||'') + '</div>' +
+        '<a href="' + waLink + '" target="_blank" style="display:block;text-align:center;background:var(--teal);color:#fff;padding:10px;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:600;">Contact on WhatsApp</a>' +
+        '</div>';
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--muted)">Unable to load CA directory right now.</p>';
+  }
+}
+window.addEventListener('load', function(){ setTimeout(loadCADirectory, 200); });
 </script>
 </body>
 </html>
